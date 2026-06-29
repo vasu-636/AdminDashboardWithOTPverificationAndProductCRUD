@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View Blogs">
+  <title>Blogs | adminHMD</title>
+
+  <link rel="stylesheet" href="/public/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/public/vendors/bootstrap-icons/bootstrap-icons.css">
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Main navigation">
+      <div class="sidebar-header">
+        <a class="brand-mark" href="/pages/dashboard" aria-label="adminHMD dashboard">
+          <span class="brand-icon"><i class="bi bi-grid-1x2-fill" aria-hidden="true"></i></span>
+          <span class="brand-copy">
+            <span class="brand-title">adminHMD</span>
+            <span class="brand-subtitle">Admin Template</span>
+          </span>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-link" href="/pages/dashboard">
+          <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a class="nav-link" href="/pages/blog/add">
+          <span class="nav-icon"><i class="bi bi-journal-plus" aria-hidden="true"></i></span>
+          <span class="nav-text">Add Blog</span>
+        </a>
+        <a class="nav-link active" href="/pages/blogs" aria-current="page">
+          <span class="nav-icon"><i class="bi bi-journal-text" aria-hidden="true"></i></span>
+          <span class="nav-text">View Blogs</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4 py-4">
+          <div class="page-heading">
+            <h1 class="h3">Blogs</h1>
+          </div>
+
+          <section class="panel mt-3">
+            <div class="panel-body">
+              <% if (blogs && blogs.length) { %>
+                <div class="list-group">
+                  <% blogs.forEach(function(blog){ %>
+                    <div class="list-group-item">
+                      <div class="d-flex justify-content-between">
+                        <div>
+                          <h5 class="mb-1"><%= blog.title %></h5>
+                          <small class="text-muted"><%= blog.createdAt.toDateString() %></small>
+                          <% if (blog.image) { %>
+                            <div class="my-2"><img src="<%= blog.image %>" alt="blog image" style="max-width:200px"></div>
+                          <% } %>
+                          <p class="mb-1"><%= blog.content.substring(0,200) %>...</p>
+                        </div>
+                        <div class="align-self-center">
+                          <a class="btn btn-sm btn-outline-primary me-1" href="/pages/blog/<%= blog._id %>/edit">Edit</a>
+                          <form action="/pages/blog/<%= blog._id %>/delete" method="post" style="display:inline-block">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <p>No blogs yet. <a href="/pages/blog/add">Create one</a></p>
+              <% } %>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/public/js/bootstrap.bundle.min.js"></script>
+  <script src="/public/js/main.js"></script>
+</body>
+</html>
