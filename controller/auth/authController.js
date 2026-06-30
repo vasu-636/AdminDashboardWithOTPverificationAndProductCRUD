@@ -47,11 +47,23 @@ const signUpController = async (req, res) => {
     }
 };
 
-const logoutController = (req, res) => {
-    req.logout(() => {
-        res.clearCookie('userId');
-        console.log('Logout Done Successfully!');
-        return res.redirect('/auth/login');
+const logoutController = (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            console.error('Logout error', err);
+            return next(err);
+        }
+
+        req.session.destroy((sessionErr) => {
+            if (sessionErr) {
+                console.error('Session destroy error', sessionErr);
+            }
+
+            res.clearCookie('userId');
+            res.clearCookie('connect.sid');
+            console.log('Logout Done Successfully!');
+            return res.redirect('/auth/login');
+        });
     });
 };
 

@@ -22,10 +22,6 @@ function requireAuth(req, res, next) {
 		return next();
 	}
 
-	if (req.cookies && req.cookies.userId) {
-		return next();
-	}
-
 	return res.redirect('/auth/login');
 }
 
