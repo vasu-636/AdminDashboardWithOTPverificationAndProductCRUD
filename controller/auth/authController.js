@@ -65,9 +65,46 @@ const logoutController = (req, res, next) => {
     });
 };
 
+const changePasswordController = (req, res) => {
+    console.log('Change Password Page Loaded Successfully!');
+    res.render('changePassowrd', { error: null });
+};
+
+const handleChangePasswordController = async (req, res) => {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+        return res.render('changePassowrd', { error: 'All fields are required' });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.render('changePassowrd', { error: 'New password and confirm password do not match' });
+    }
+
+    try {
+        const user = await User.findById(req.user._id).exec();
+        if (!user) {
+            return res.redirect('/auth/login');
+        }
+
+        const isOldPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isOldPasswordValid) {
+            return res.render('changePassowrd', { error: 'Old password does not match current password' });
+        }
+
+        user.password = await bcrypt.hash(newPassword, SALT_ROUNDS);
+        await user.save();
+        console.log('Password changed successfully for user:', user.email);
+        return res.redirect('/auth/logout');
+    } catch (error) {
+        console.error('Error changing password', error);
+        return res.render('changePassowrd', { error: 'Unable to change password. Please try again.' });
+    }
+};
+
 const loginController = (req, res) => {
     console.log('Login Page Loaded Successfully!');
     res.render('login');
 };
 
-module.exports = { registerController, loginController, signInController, signUpController, logoutController };
+module.exports = { registerController, loginController, signInController, signUpController, logoutController, changePasswordController, handleChangePasswordController };

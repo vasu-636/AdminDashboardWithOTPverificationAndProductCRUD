@@ -147,11 +147,7 @@
 
     // Initialize user profile values in UI. Provide a window.adminHMDUser object to override defaults.
     function initUserProfile() {
-<<<<<<< HEAD
       // var user = window.adminHMDUser || { name: "Admin Hasan", workspace: "Active Workspace", avatar: "../assets/images/avatar/avatar.jpg" };
-=======
-     // var user = window.adminHMDUser || { name: "Admin Hasan", workspace: "Active Workspace", avatar: "../assets/images/avatar/avatar.jpg" };
->>>>>>> 2ff48702ab1d50bf83899a6fa1166035fd94dacf
 
       var sidebarNameEl = document.querySelector(".sidebar-user strong");
       var sidebarWorkspaceEl = document.querySelector(".sidebar-user small");
