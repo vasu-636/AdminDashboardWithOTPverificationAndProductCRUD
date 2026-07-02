@@ -1,6 +1,6 @@
 const pageRouter = require('express').Router();
 
-const {dashboardControllerRender, profileController, updateProfileController} = require('../../controller/pages/pageController');
+const {dashboardControllerRender, profileController, editProfileController, updateProfileController} = require('../../controller/pages/pageController');
 const { renderAddBlog, createBlog, renderViewBlogs, renderEditBlog, updateBlog, deleteBlog } = require('../../controller/pages/blogController');
 const multer = require('multer');
 const fs = require('fs');
@@ -40,6 +40,7 @@ pageRouter.get('/blog/:id/edit', requireAuth, renderEditBlog);
 pageRouter.post('/blog/:id/edit', requireAuth, upload.single('image'), updateBlog);
 pageRouter.post('/blog/:id/delete', requireAuth, deleteBlog);
 pageRouter.get('/profile', requireAuth, profileController);
+pageRouter.get('/profile/edit', requireAuth, editProfileController);
 pageRouter.post('/profile', requireAuth, upload.single('profileImage'), updateProfileController);
 
 

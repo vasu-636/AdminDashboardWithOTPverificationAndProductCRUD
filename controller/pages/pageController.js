@@ -16,6 +16,14 @@ const profileController = async (req, res) => {
     res.render('profile', { user });
 }
 
+const editProfileController = async (req, res) => {
+    console.log("Edit Profile Page Loaded Successfully!");
+
+    const user = req.user ? await User.findById(req.user._id) : null;
+
+    res.render('edit-profile', { user });
+}
+
 const updateProfileController = async (req, res) => {
     try {
         if (!req.user) {
@@ -54,5 +62,5 @@ const updateProfileController = async (req, res) => {
 }
 
 module.exports = {
-    dashboardControllerRender, profileController, updateProfileController
+    dashboardControllerRender, profileController, updateProfileController , editProfileController
 }

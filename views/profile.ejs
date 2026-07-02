@@ -26,8 +26,8 @@
           <section class="row g-3">
             <div class="col-12 col-xl-4">
               <div class="panel h-100 text-center profile-card">
-                <div class="profile-cover"><img src="../public/images/png/dasher-ui-bootstrap-5.jpg" alt="adminHMD dashboard preview"></div>
-                <img class="avatar-img avatar-xl profile-photo" src="<%= user && user.profileImage ? user.profileImage : '../public/images/avatar/avatar.jpg' %>" alt="<%= user ? user.name : 'User' %>">
+                <div class="profile-cover"><img src="/public/images/png/dasher-ui-bootstrap-5.jpg" alt="adminHMD dashboard preview"></div>
+                <img class="avatar-img avatar-xl profile-photo" src="<%= user && user.profileImage ? user.profileImage : '/public/images/avatar/avatar.jpg' %>" alt="<%= user ? user.name : 'User' %>">
                 <h2 class="h5 mt-3 mb-1"><%= user ? user.name : 'User' %></h2>
                 <p class="text-muted mb-3"><%= user && user.bio ? user.bio : 'Product Administrator' %></p>
                 <div class="d-flex justify-content-center gap-2"><span class="badge text-bg-primary">Admin</span><span class="badge text-bg-success">Verified</span></div>
@@ -35,17 +35,21 @@
               </div>
             </div>
             <div class="col-12 col-xl-8">
-              <form class="panel needs-validation" method="post" action="/pages/profile" enctype="multipart/form-data" novalidate>
-                <div class="panel-header"><div><h2 class="h5 mb-1 section-title"><i class="bi bi-person-gear" aria-hidden="true"></i><span>Profile Settings</span></h2><p class="text-muted mb-0">Update your account profile and contact details.</p></div></div>
-                <div class="row g-3">
-                  <div class="col-md-6"><label class="form-label" for="profileName">Name</label><input class="form-control" id="profileName" name="name" type="text" value="<%= user ? user.name : '' %>" required><div class="invalid-feedback">Name is required.</div></div>
-                  <div class="col-md-6"><label class="form-label" for="profileEmail">Email</label><input class="form-control" id="profileEmail" name="email" type="email" value="<%= user ? user.email : '' %>" required><div class="invalid-feedback">Enter a valid email.</div></div>
-                  <div class="col-md-6"><label class="form-label" for="profilePhone">Contact Number</label><input class="form-control" id="profilePhone" name="phoneNumber" type="text" value="<%= user && user.phoneNumber ? user.phoneNumber : '' %>" placeholder="Enter your phone number"></div>
-                  <div class="col-md-6"><label class="form-label" for="profileImage">Profile Photo</label><input class="form-control" id="profileImage" name="profileImage" type="file" accept="image/*"></div>
-                  <div class="col-12"><label class="form-label" for="profileBio">Bio</label><textarea class="form-control" id="profileBio" name="bio" rows="5"><%= user && user.bio ? user.bio : 'Focused on clean admin workflows, reusable UI systems, and reliable operations.' %></textarea></div>
+              <div class="panel">
+                <div class="panel-header">
+                  <div>
+                    <h2 class="h5 mb-1 section-title"><i class="bi bi-person-gear" aria-hidden="true"></i><span>Profile Summary</span></h2>
+                    <p class="text-muted mb-0">Your public profile details are shown here. Use edit profile to make changes.</p>
+                  </div>
+                  <a class="btn btn-primary" href="/pages/profile/edit"><i class="bi bi-pencil-square" aria-hidden="true"></i> Edit Profile</a>
                 </div>
-                <div class="d-flex justify-content-end mt-4"><button class="btn btn-primary" type="submit"><i class="bi bi-check2-circle" aria-hidden="true"></i> Save Profile</button></div>
-              </form>
+                <div class="row g-3">
+                  <div class="col-12"><label class="form-label">Name</label><p class="form-control-plaintext fw-semibold"><%= user ? user.name : 'User' %></p></div>
+                  <div class="col-md-6"><label class="form-label">Email</label><p class="form-control-plaintext"><%= user ? user.email : 'N/A' %></p></div>
+                  <div class="col-md-6"><label class="form-label">Contact Number</label><p class="form-control-plaintext"><%= user && user.phoneNumber ? user.phoneNumber : 'Not added yet' %></p></div>
+                  <div class="col-12"><label class="form-label">Bio</label><p class="form-control-plaintext"><%= user && user.bio ? user.bio : 'No bio yet' %></p></div>
+                </div>
+              </div>
             </div>
           </section>
         </div>
