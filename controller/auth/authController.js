@@ -70,6 +70,80 @@ const changePasswordController = (req, res) => {
     res.render('changePassowrd', { error: null });
 };
 
+const forgotPasswordController = (req, res) => {
+    res.render('forgot-password', { error: null, success: null });
+};
+
+const handleForgotPasswordController = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.render('forgot-password', { error: 'Please enter your email address.', success: null });
+    }
+
+    try {
+        const user = await User.findOne({ email }).exec();
+        if (!user) {
+            return res.render('forgot-password', {
+                error: 'No user found with that email address.',
+                success: null
+            });
+        }
+
+        return res.redirect(`/auth/reset-password/${user._id}`);
+    } catch (error) {
+        console.error('Error in forgot password flow', error);
+        return res.render('forgot-password', { error: 'Unable to process reset request. Please try again.', success: null });
+    }
+};
+
+const resetPasswordController = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id).exec();
+        if (!user) {
+            return res.render('reset-password', { error: 'Invalid user.', success: null, userId: null });
+        }
+
+        return res.render('reset-password', { error: null, success: null, userId: user._id });
+    } catch (error) {
+        console.error('Error loading reset password page', error);
+        return res.render('reset-password', { error: 'Unable to load reset page.', success: null, userId: null });
+    }
+};
+
+const handleResetPasswordController = async (req, res) => {
+    const { userId, password, confirmPassword } = req.body;
+
+    if (!userId || !password || !confirmPassword) {
+        return res.render('reset-password', { error: 'All fields are required.', success: null, userId });
+    }
+
+    if (password !== confirmPassword) {
+        return res.render('reset-password', { error: 'New password and confirm password do not match.', success: null, userId });
+    }
+
+    if (password.length < 6) {
+        return res.render('reset-password', { error: 'Password must be at least 6 characters long.', success: null, userId });
+    }
+
+    try {
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render('reset-password', { error: 'Invalid user.', success: null, userId: null });
+        }
+
+        user.password = await bcrypt.hash(password, SALT_ROUNDS);
+        await user.save();
+
+        return res.redirect('/auth/login');
+    } catch (error) {
+        console.error('Error resetting password', error);
+        return res.render('reset-password', { error: 'Unable to reset password. Please try again.', success: null, userId });
+    }
+};
+
 const handleChangePasswordController = async (req, res) => {
     const { oldPassword, newPassword, confirmPassword } = req.body;
 
@@ -107,4 +181,16 @@ const loginController = (req, res) => {
     res.render('login');
 };
 
-module.exports = { registerController, loginController, signInController, signUpController, logoutController, changePasswordController, handleChangePasswordController };
+module.exports = {
+    registerController,
+    loginController,
+    signInController,
+    signUpController,
+    logoutController,
+    changePasswordController,
+    handleChangePasswordController,
+    forgotPasswordController,
+    handleForgotPasswordController,
+    resetPasswordController,
+    handleResetPasswordController
+};

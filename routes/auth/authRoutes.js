@@ -1,5 +1,17 @@
 
-const {registerController, loginController, signInController, signUpController, logoutController, changePasswordController, handleChangePasswordController} = require('../../controller/auth/authController')
+const {
+    registerController,
+    loginController,
+    signInController,
+    signUpController,
+    logoutController,
+    changePasswordController,
+    handleChangePasswordController,
+    forgotPasswordController,
+    handleForgotPasswordController,
+    resetPasswordController,
+    handleResetPasswordController
+} = require('../../controller/auth/authController')
 const authRouter = require('express').Router();
 
 function redirectIfAuthenticated(req, res, next) {
@@ -20,6 +32,10 @@ authRouter.get('/register', registerController);
 authRouter.post('/signUp', signUpController);
 authRouter.post('/signIn', signInController);
 authRouter.get('/login', redirectIfAuthenticated, loginController);
+authRouter.get('/forgot-password', forgotPasswordController);
+authRouter.post('/forgot-password', handleForgotPasswordController);
+authRouter.get('/reset-password/:id', resetPasswordController);
+authRouter.post('/reset-password', handleResetPasswordController);
 authRouter.get('/changePassword', requireAuth, changePasswordController);
 authRouter.post('/changePassword', requireAuth, handleChangePasswordController);
 authRouter.get('/logout', logoutController);
