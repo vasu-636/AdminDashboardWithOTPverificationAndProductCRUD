@@ -3,6 +3,8 @@ const passport = require('../../middleware/passport');
 const User = require('../../models/UserModel/userModel');
 const SALT_ROUNDS = 10;
 
+const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
+
 const registerController = (req, res) => {
     console.log('Register Page Loaded Successfully!');
     res.render('register');
@@ -90,10 +92,61 @@ const handleForgotPasswordController = async (req, res) => {
             });
         }
 
-        return res.redirect(`/auth/reset-password/${user._id}`);
+        const otp = generateOtp();
+        user.otp = otp;
+        user.otpExpiresAt = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        console.log(`OTP for ${email}: ${otp}`);
+
+        return res.redirect(`/auth/verify-otp/${user._id}`);
     } catch (error) {
         console.error('Error in forgot password flow', error);
         return res.render('forgot-password', { error: 'Unable to process reset request. Please try again.', success: null });
+    }
+};
+
+const verifyOtpController = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id).exec();
+        if (!user) {
+            return res.render('verify-otp', { error: 'Invalid user.', success: null, userId: null });
+        }
+
+        return res.render('verify-otp', { error: null, success: null, userId: user._id });
+    } catch (error) {
+        console.error('Error loading OTP verification page', error);
+        return res.render('verify-otp', { error: 'Unable to load verification page.', success: null, userId: null });
+    }
+};
+
+const handleVerifyOtpController = async (req, res) => {
+    const { userId, otp } = req.body;
+
+    if (!userId || !otp) {
+        return res.render('verify-otp', { error: 'Please enter the OTP.', success: null, userId });
+    }
+
+    try {
+        const user = await User.findById(userId).exec();
+        if (!user) {
+            return res.render('verify-otp', { error: 'Invalid user.', success: null, userId: null });
+        }
+
+        if (!user.otp || user.otp !== otp || !user.otpExpiresAt || user.otpExpiresAt < Date.now()) {
+            return res.render('verify-otp', { error: 'Invalid or expired OTP.', success: null, userId });
+        }
+
+        user.otp = undefined;
+        user.otpExpiresAt = undefined;
+        await user.save();
+
+        return res.redirect(`/auth/reset-password/${user._id}`);
+    } catch (error) {
+        console.error('Error verifying OTP', error);
+        return res.render('verify-otp', { error: 'Unable to verify OTP. Please try again.', success: null, userId });
     }
 };
 
@@ -105,7 +158,6 @@ const resetPasswordController = async (req, res) => {
         if (!user) {
             return res.render('reset-password', { error: 'Invalid user.', success: null, userId: null });
         }
-
         return res.render('reset-password', { error: null, success: null, userId: user._id });
     } catch (error) {
         console.error('Error loading reset password page', error);
@@ -136,6 +188,7 @@ const handleResetPasswordController = async (req, res) => {
 
         user.password = await bcrypt.hash(password, SALT_ROUNDS);
         await user.save();
+         console.log("Password Changed Successfully");
 
         return res.redirect('/auth/login');
     } catch (error) {
@@ -191,6 +244,8 @@ module.exports = {
     handleChangePasswordController,
     forgotPasswordController,
     handleForgotPasswordController,
+    verifyOtpController,
+    handleVerifyOtpController,
     resetPasswordController,
     handleResetPasswordController
 };

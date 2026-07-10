@@ -22,6 +22,12 @@ const userSchema = mongoose.Schema({
     },
     profileImage: {
         type: String,
+    },
+    otp: {
+        type: String,
+    },
+    otpExpiresAt: {
+        type: Date,
     }
 })
 

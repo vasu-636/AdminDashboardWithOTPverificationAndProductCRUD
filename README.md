@@ -1,6 +1,6 @@
 # Admin Panel With Password Hashing
 
-A Node.js admin panel application built with Express, MongoDB, EJS, Passport, and bcrypt. It includes user registration/login, password hashing, session-based authentication, profile management, password reset/change, and blog management features.
+A Node.js admin panel application built with Express, MongoDB, EJS, Passport, and bcrypt. It includes user registration/login, password hashing, session-based authentication, profile management, password change, and an OTP-based forgot password flow.
 
 ## Features
 
@@ -12,7 +12,8 @@ A Node.js admin panel application built with Express, MongoDB, EJS, Passport, an
 - Blog CRUD operations
 - Image upload support for blog posts
 - Change password for authenticated users
-- Forgot password / reset password flow
+- Forgot password flow with OTP verification
+- Reset password after successful OTP verification
 
 ## Tech Stack
 
@@ -61,7 +62,8 @@ The server will start on:
 - Visit `http://localhost:3001/auth/register` to create an account
 - Visit `http://localhost:3001/auth/login` to sign in
 - Visit `http://localhost:3001/auth/forgot-password` to begin a password reset
-- Use `http://localhost:3001/auth/reset-password/:id` to set a new password after a valid reset request
+- Enter the registered email address to receive an OTP in the console and verify it at `http://localhost:3001/auth/verify-otp/:id`
+- After successful OTP verification, use `http://localhost:3001/auth/reset-password/:id` to set a new password
 - Authenticated users can change their password at `http://localhost:3001/auth/changePassword`
 - After login, access the dashboard and blog management pages
 
@@ -83,4 +85,5 @@ index.js         # Main server entry point
 - Passwords are securely hashed before being stored in the database.
 - Protected routes require authentication.
 - The forgot password flow validates registered users before allowing password reset.
-- If you add email delivery later, the reset page can be updated to email reset links instead of redirecting by user ID.
+- OTPs are generated and stored temporarily for verification before the password reset page is shown.
+- In the current setup, OTPs are printed to the console for testing purposes.
