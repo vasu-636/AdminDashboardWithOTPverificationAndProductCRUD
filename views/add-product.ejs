@@ -1,0 +1,65 @@
+<%- include('partials/head', { title: 'Add Product | adminHMD', description: 'Create a new product' }) %>
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <%- include('partials/sidebar', { activePage: 'addProduct' }) %>
+    <div class="admin-main">
+      <%- include('partials/navbar') %>
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4 py-4">
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1">Catalog</p>
+                <h1 class="h3 mb-1">Add Product</h1>
+                <p class="text-muted mb-0">Add a new product to the catalog.</p>
+              </div>
+            </div>
+          </div>
+
+          <section class="panel mt-3">
+            <form action="/pages/product/add" method="POST" enctype="multipart/form-data" class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="name">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="price">Price</label>
+                <input type="number" class="form-control" id="price" name="price" step="0.01" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="category">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                  <option value="">Select category</option>
+                  <% categories.forEach((category) => { %>
+                    <option value="<%= category._id %>"><%= category.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="stock">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" min="0" value="0">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="image">Product Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Save Product</button>
+                <a href="/pages/products" class="btn btn-outline-secondary ms-2">Back</a>
+              </div>
+            </form>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/public/js/bootstrap.bundle.min.js"></script>
+  <script src="/public/js/main.js"></script>
+</body>
+</html>

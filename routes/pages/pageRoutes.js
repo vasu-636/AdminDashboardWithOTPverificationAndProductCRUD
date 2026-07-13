@@ -1,7 +1,8 @@
 const pageRouter = require('express').Router();
 
 const {dashboardControllerRender, profileController, editProfileController, updateProfileController} = require('../../controller/pages/pageController');
-const { renderAddBlog, createBlog, renderViewBlogs, renderEditBlog, updateBlog, deleteBlog } = require('../../controller/pages/blogController');
+const { renderAddCategory, createCategory, renderViewCategories, renderEditCategory, updateCategory, deleteCategory } = require('../../controller/pages/categoryController');
+const { renderAddProduct, createProduct, renderViewProducts, renderEditProduct, updateProduct, deleteProduct } = require('../../controller/pages/productController');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -33,12 +34,18 @@ function requireAuth(req, res, next) {
 }
 
 pageRouter.get('/dashboard', requireAuth, dashboardControllerRender);
-pageRouter.get('/blog/add', requireAuth, renderAddBlog);
-pageRouter.post('/blog/add', requireAuth, upload.single('image'), createBlog);
-pageRouter.get('/blogs', requireAuth, renderViewBlogs);
-pageRouter.get('/blog/:id/edit', requireAuth, renderEditBlog);
-pageRouter.post('/blog/:id/edit', requireAuth, upload.single('image'), updateBlog);
-pageRouter.post('/blog/:id/delete', requireAuth, deleteBlog);
+pageRouter.get('/category/add', requireAuth, renderAddCategory);
+pageRouter.post('/category/add', requireAuth, createCategory);
+pageRouter.get('/categories', requireAuth, renderViewCategories);
+pageRouter.get('/category/:id/edit', requireAuth, renderEditCategory);
+pageRouter.post('/category/:id/edit', requireAuth, updateCategory);
+pageRouter.post('/category/:id/delete', requireAuth, deleteCategory);
+pageRouter.get('/product/add', requireAuth, renderAddProduct);
+pageRouter.post('/product/add', requireAuth, upload.single('image'), createProduct);
+pageRouter.get('/products', requireAuth, renderViewProducts);
+pageRouter.get('/product/:id/edit', requireAuth, renderEditProduct);
+pageRouter.post('/product/:id/edit', requireAuth, upload.single('image'), updateProduct);
+pageRouter.post('/product/:id/delete', requireAuth, deleteProduct);
 pageRouter.get('/profile', requireAuth, profileController);
 pageRouter.get('/profile/edit', requireAuth, editProfileController);
 pageRouter.post('/profile', requireAuth, upload.single('profileImage'), updateProfileController);

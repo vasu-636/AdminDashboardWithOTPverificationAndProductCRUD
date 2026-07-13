@@ -15,13 +15,21 @@
       <span class="nav-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></span>
       <span class="nav-text">Dashboard</span>
     </a>
-    <a class="nav-link <%= currentPage === 'addBlog' ? 'active' : '' %>" href="/pages/blog/add" <%= currentPage === 'addBlog' ? 'aria-current="page"' : '' %>>
-      <span class="nav-icon"><i class="bi bi-journal-plus" aria-hidden="true"></i></span>
-      <span class="nav-text">Add Blog</span>
+    <a class="nav-link <%= currentPage === 'addCategory' ? 'active' : '' %>" href="/pages/category/add" <%= currentPage === 'addCategory' ? 'aria-current="page"' : '' %>>
+      <span class="nav-icon"><i class="bi bi-tags" aria-hidden="true"></i></span>
+      <span class="nav-text">Add Category</span>
     </a>
-    <a class="nav-link <%= currentPage === 'viewBlogs' ? 'active' : '' %>" href="/pages/blogs" <%= currentPage === 'viewBlogs' ? 'aria-current="page"' : '' %>>
-      <span class="nav-icon"><i class="bi bi-journal-text" aria-hidden="true"></i></span>
-      <span class="nav-text">View Blogs</span>
+    <a class="nav-link <%= currentPage === 'viewCategories' ? 'active' : '' %>" href="/pages/categories" <%= currentPage === 'viewCategories' ? 'aria-current="page"' : '' %>>
+      <span class="nav-icon"><i class="bi bi-list-ul" aria-hidden="true"></i></span>
+      <span class="nav-text">Categories</span>
+    </a>
+    <a class="nav-link <%= currentPage === 'addProduct' ? 'active' : '' %>" href="/pages/product/add" <%= currentPage === 'addProduct' ? 'aria-current="page"' : '' %>>
+      <span class="nav-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+      <span class="nav-text">Add Product</span>
+    </a>
+    <a class="nav-link <%= currentPage === 'viewProducts' ? 'active' : '' %>" href="/pages/products" <%= currentPage === 'viewProducts' ? 'aria-current="page"' : '' %>>
+      <span class="nav-icon"><i class="bi bi-box2-heart" aria-hidden="true"></i></span>
+      <span class="nav-text">Products</span>
     </a>
     <a class="nav-link <%= currentPage === 'profile' ? 'active' : '' %>" href="/pages/profile" <%= currentPage === 'profile' ? 'aria-current="page"' : '' %>>
       <span class="nav-icon"><i class="bi bi-person-badge" aria-hidden="true"></i></span>

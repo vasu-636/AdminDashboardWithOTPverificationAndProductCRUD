@@ -1,0 +1,64 @@
+<%- include('partials/head', { title: 'Edit Product | adminHMD', description: 'Update an existing product' }) %>
+<body>
+  <div class="admin-shell">
+    <div class="sidebar-backdrop" data-sidebar-close></div>
+    <%- include('partials/sidebar', { activePage: 'editProduct' }) %>
+    <div class="admin-main">
+      <%- include('partials/navbar') %>
+      <main class="dashboard-content">
+        <div class="container-fluid px-3 px-lg-4 py-4">
+          <div class="page-heading">
+            <div class="page-heading-copy">
+              <span class="page-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+              <div>
+                <p class="eyebrow mb-1">Catalog</p>
+                <h1 class="h3 mb-1">Edit Product</h1>
+                <p class="text-muted mb-0">Update product details.</p>
+              </div>
+            </div>
+          </div>
+
+          <section class="panel mt-3">
+            <form action="/pages/product/<%= product._id %>/edit" method="POST" enctype="multipart/form-data" class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="name">Product Name</label>
+                <input type="text" class="form-control" id="name" name="name" value="<%= product.name %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="price">Price</label>
+                <input type="number" class="form-control" id="price" name="price" step="0.01" value="<%= product.price %>" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="category">Category</label>
+                <select class="form-select" id="category" name="category" required>
+                  <% categories.forEach((category) => { %>
+                    <option value="<%= category._id %>" <%= product.category && product.category._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="stock">Stock</label>
+                <input type="number" class="form-control" id="stock" name="stock" min="0" value="<%= product.stock %>">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="4"><%= product.description %></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="image">Product Image</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Update Product</button>
+                <a href="/pages/products" class="btn btn-outline-secondary ms-2">Cancel</a>
+              </div>
+            </form>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/public/js/bootstrap.bundle.min.js"></script>
+  <script src="/public/js/main.js"></script>
+</body>
+</html>

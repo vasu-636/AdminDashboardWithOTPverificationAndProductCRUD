@@ -9,8 +9,9 @@ A Node.js admin panel application built with Express, MongoDB, EJS, Passport, an
 - Local authentication using Passport.js
 - Session-based auth with cookie support
 - Admin dashboard UI
-- Blog CRUD operations
-- Image upload support for blog posts
+- Category CRUD operations
+- Product CRUD operations
+- Image upload support for products
 - Change password for authenticated users
 - Forgot password flow with OTP verification
 - Reset password after successful OTP verification
@@ -65,7 +66,7 @@ The server will start on:
 - Enter the registered email address to receive an OTP in the console and verify it at `http://localhost:3001/auth/verify-otp/:id`
 - After successful OTP verification, use `http://localhost:3001/auth/reset-password/:id` to set a new password
 - Authenticated users can change their password at `http://localhost:3001/auth/changePassword`
-- After login, access the dashboard and blog management pages
+- After login, access the dashboard and catalog management pages
 
 ## Project Structure
 
