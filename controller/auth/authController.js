@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const passport = require('../../middleware/passport');
 const User = require('../../models/UserModel/userModel');
+const { sendEmail, getWelcomeEmailTemplate, getOtpResetEmailTemplate } = require('../../config/email');
 const SALT_ROUNDS = 10;
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -41,9 +42,18 @@ const signUpController = async (req, res) => {
         });
 
         console.log('User Added Successfully! User ---> ', user);
+
+        // Send welcome email upon registration
+        await sendEmail({
+            to: user.email,
+            subject: 'Welcome to adminHMD! 🎉',
+            html: getWelcomeEmailTemplate(user.name)
+        });
+
         return res.redirect('/auth/login');
     } catch (error) {
         console.log('Something Went Wrong .............', error);
+        return res.redirect('/auth/register');
     }
 };
 
@@ -98,6 +108,13 @@ const handleForgotPasswordController = async (req, res) => {
         await user.save();
 
         console.log(`OTP for ${email}: ${otp}`);
+
+        // Send OTP via email
+        await sendEmail({
+            to: user.email,
+            subject: 'Your Password Reset Verification Code 🔐',
+            html: getOtpResetEmailTemplate(user.name, otp)
+        });
 
         return res.redirect(`/auth/verify-otp/${user._id}`);
     } catch (error) {
