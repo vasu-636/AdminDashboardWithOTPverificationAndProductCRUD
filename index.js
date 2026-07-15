@@ -11,7 +11,7 @@ const { authRouter } = require('./routes/auth/authRoutes')
 const { pageRouter } = require('./routes/pages/pageRoutes')
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 db();
 
@@ -43,22 +43,10 @@ app.use(async (req, res, next) => {
     next();
 });
 
-// Root route auto-redirect
-app.get('/', (req, res) => {
-    if (req.isAuthenticated && req.isAuthenticated()) {
-        return res.redirect('/pages/dashboard');
-    }
-    return res.redirect('/auth/login');
-});
-
 app.use('/auth', authRouter);
 app.use('/pages', pageRouter);
 
-// Server (only listen locally; Vercel serverless environment uses exported app)
-if (!process.env.VERCEL) {
-    app.listen(PORT, () => {
-        console.log(`Server Running on : http://localhost:${PORT}`);
-    });
-}
-
-module.exports = app;
+// Server
+app.listen(PORT, () => {
+    console.log(`Server Running on : http://localhost:${PORT}`);
+});
