@@ -24,12 +24,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
-    secret: 'admin-panel-secret',
+    secret: process.env.SESSION_SECRET || 'admin-panel-secret',
     resave: false,
     saveUninitialized: false
 }));
+app.use(require('express-flash')());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+    res.locals.successMessages = req.flash('success');
+    res.locals.errorMessages = req.flash('error');
+    next();
+});
 app.use(async (req, res, next) => {
     if (req.user && req.user._id) {
         try {

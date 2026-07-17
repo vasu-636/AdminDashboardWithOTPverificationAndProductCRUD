@@ -7,11 +7,32 @@ const renderAddCategory = (req, res) => {
 const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    await Category.create({ name, description });
+    if (!name || name.trim().length < 4) {
+      req.flash('error', 'Category name must be at least 4 characters long.');
+      return res.redirect('/pages/category/add');
+    }
+
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${name.trim()}$`, 'i') }
+    });
+    if (existingCategory) {
+      req.flash('error', 'Category already exists. Duplicate category names are not allowed.');
+      return res.redirect('/pages/category/add');
+    }
+
+    await Category.create({ name: name.trim(), description });
+    req.flash('success', 'Category created successfully.');
     res.redirect('/pages/categories');
   } catch (err) {
     console.error(err);
-    res.redirect('/pages/categories');
+    if (err.code === 11000) {
+      req.flash('error', 'Category already exists. Duplicate category names are not allowed.');
+    } else if (err.errors && err.errors.name) {
+      req.flash('error', err.errors.name.message);
+    } else {
+      req.flash('error', 'Failed to create category.');
+    }
+    res.redirect('/pages/category/add');
   }
 };
 
@@ -39,26 +60,59 @@ const renderEditCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    const category = await Category.findById(req.params.id);
-    if (!category) return res.redirect('/pages/categories');
+    if (!name || name.trim().length < 4) {
+      req.flash('error', 'Category name must be at least 4 characters long.');
+      return res.redirect(`/pages/category/${req.params.id}/edit`);
+    }
 
-    category.name = name;
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+      req.flash('error', 'Category not found.');
+      return res.redirect('/pages/categories');
+    }
+
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(`^${name.trim()}$`, 'i') },
+      _id: { $ne: req.params.id }
+    });
+    if (existingCategory) {
+      req.flash('error', 'Category already exists. Duplicate category names are not allowed.');
+      return res.redirect(`/pages/category/${req.params.id}/edit`);
+    }
+
+    category.name = name.trim();
     category.description = description;
     await category.save();
 
+    req.flash('success', 'Category updated successfully.');
     res.redirect('/pages/categories');
   } catch (err) {
     console.error(err);
-    res.redirect('/pages/categories');
+    if (err.code === 11000) {
+      req.flash('error', 'Category already exists. Duplicate category names are not allowed.');
+    } else if (err.errors && err.errors.name) {
+      req.flash('error', err.errors.name.message);
+    } else {
+      req.flash('error', 'Failed to update category.');
+    }
+    res.redirect(`/pages/category/${req.params.id}/edit`);
   }
 };
 
 const deleteCategory = async (req, res) => {
   try {
-    await Category.findByIdAndDelete(req.params.id);
+    const category = await Category.findById(req.params.id);
+    if (!category) {
+      req.flash('error', 'Category not found.');
+      return res.redirect('/pages/categories');
+    }
+
+    await category.deleteOne();
+    req.flash('success', 'Category deleted successfully.');
     res.redirect('/pages/categories');
   } catch (err) {
     console.error(err);
+    req.flash('error', 'Failed to delete category.');
     res.redirect('/pages/categories');
   }
 };

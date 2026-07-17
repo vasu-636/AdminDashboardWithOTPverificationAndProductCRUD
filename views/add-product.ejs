@@ -16,13 +16,30 @@
                 <p class="text-muted mb-0">Add a new product to the catalog.</p>
               </div>
             </div>
-          </div>
+          <% if (typeof successMessages !== 'undefined' && successMessages.length) { %>
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              <% successMessages.forEach((message) => { %>
+                <span><%= message %></span>
+              <% }) %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          <% if (typeof errorMessages !== 'undefined' && errorMessages.length) { %>
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <% errorMessages.forEach((message) => { %>
+                <span><%= message %></span>
+              <% }) %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
 
           <section class="panel mt-3">
             <form action="/pages/product/add" method="POST" enctype="multipart/form-data" class="row g-3">
               <div class="col-md-6">
                 <label class="form-label" for="name">Product Name</label>
-                <input type="text" class="form-control" id="name" name="name" required>
+                <input type="text" class="form-control" id="name" name="name" minlength="4" placeholder="Minimum 4 characters" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="price">Price</label>

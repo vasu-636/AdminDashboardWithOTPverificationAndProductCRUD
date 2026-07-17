@@ -16,17 +16,36 @@ const renderAddProduct = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
-    const productData = { name, description, price: Number(price), category, stock: Number(stock) };
+    if (!name || name.trim().length < 4) {
+      if (req.file && req.file.filename) {
+        const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', req.file.filename);
+        fs.unlink(filePath, () => {});
+      }
+      req.flash('error', 'Product name must be at least 4 characters long.');
+      return res.redirect('/pages/product/add');
+    }
+
+    const productData = { name: name.trim(), description, price: Number(price), category, stock: Number(stock) };
 
     if (req.file && req.file.filename) {
       productData.image = '/public/uploads/' + req.file.filename;
     }
 
     await Product.create(productData);
+    req.flash('success', 'Product created successfully.');
     res.redirect('/pages/products');
   } catch (err) {
     console.error(err);
-    res.redirect('/pages/products');
+    if (req.file && req.file.filename) {
+      const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', req.file.filename);
+      fs.unlink(filePath, () => {});
+    }
+    if (err.errors && err.errors.name) {
+      req.flash('error', err.errors.name.message);
+    } else {
+      req.flash('error', 'Failed to create product.');
+    }
+    res.redirect('/pages/product/add');
   }
 };
 
@@ -55,8 +74,20 @@ const renderEditProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
+    if (!name || name.trim().length < 4) {
+      if (req.file && req.file.filename) {
+        const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', req.file.filename);
+        fs.unlink(filePath, () => {});
+      }
+      req.flash('error', 'Product name must be at least 4 characters long.');
+      return res.redirect(`/pages/product/${req.params.id}/edit`);
+    }
+
     const product = await Product.findById(req.params.id);
-    if (!product) return res.redirect('/pages/products');
+    if (!product) {
+      req.flash('error', 'Product not found.');
+      return res.redirect('/pages/products');
+    }
 
     if (req.file && req.file.filename) {
       if (product.image) {
@@ -66,33 +97,49 @@ const updateProduct = async (req, res) => {
       product.image = '/public/uploads/' + req.file.filename;
     }
 
-    product.name = name;
+    product.name = name.trim();
     product.description = description;
     product.price = Number(price);
     product.category = category;
     product.stock = Number(stock);
     await product.save();
 
+    req.flash('success', 'Product updated successfully.');
     res.redirect('/pages/products');
   } catch (err) {
     console.error(err);
-    res.redirect('/pages/products');
+    if (req.file && req.file.filename) {
+      const filePath = path.join(__dirname, '..', '..', 'public', 'uploads', req.file.filename);
+      fs.unlink(filePath, () => {});
+    }
+    if (err.errors && err.errors.name) {
+      req.flash('error', err.errors.name.message);
+    } else {
+      req.flash('error', 'Failed to update product.');
+    }
+    res.redirect(`/pages/product/${req.params.id}/edit`);
   }
 };
 
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    if (product) {
-      if (product.image) {
-        const existingPath = path.join(__dirname, '..', '..', product.image.replace('/public/', 'public/'));
-        fs.unlink(existingPath, () => {});
-      }
-      await product.deleteOne();
+    if (!product) {
+      req.flash('error', 'Product not found.');
+      return res.redirect('/pages/products');
     }
+
+    if (product.image) {
+      const existingPath = path.join(__dirname, '..', '..', product.image.replace('/public/', 'public/'));
+      fs.unlink(existingPath, () => {});
+    }
+    await product.deleteOne();
+
+    req.flash('success', 'Product deleted successfully.');
     res.redirect('/pages/products');
   } catch (err) {
     console.error(err);
+    req.flash('error', 'Failed to delete product.');
     res.redirect('/pages/products');
   }
 };

@@ -9,8 +9,8 @@ A Node.js admin panel application built with Express, MongoDB, EJS, Passport, an
 - Local authentication using Passport.js
 - Session-based auth with cookie support
 - Admin dashboard UI
-- Category CRUD operations
-- Product CRUD operations
+- Category CRUD operations with validation (minimum 4 character names, unique categories)
+- Product CRUD operations with validation (minimum 4 character names)
 - Image upload support for products
 - Change password for authenticated users
 - Forgot password flow with OTP verification
@@ -37,6 +37,26 @@ Before running the project, make sure you have:
 The app connects to MongoDB at:
 
 - mongodb://127.0.0.1:27017/adminPanel
+
+## Environment Variables (.env)
+
+Create a `.env` file in the root directory of the project with the following configuration format so that the application can run identically across different environments:
+
+```env
+# Server Configuration
+PORT=3001
+SESSION_SECRET=your_secret_key_here
+MONGO_URI=mongodb://127.0.0.1:27017/adminPanel
+
+# SMTP Email Configuration (Nodemailer / OTP delivery)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+EMAIL_FROM=your_email@gmail.com
+```
+
+> **Note on Gmail SMTP**: If you are using Gmail (`smtp.gmail.com`), make sure to enable 2-Step Verification on your Google Account and generate an **App Password** (`Security` -> `2-Step Verification` -> `App passwords`) to paste into `EMAIL_PASS`.
 
 ## Installation
 
@@ -88,3 +108,5 @@ index.js         # Main server entry point
 - The forgot password flow validates registered users before allowing password reset.
 - OTPs are generated and stored temporarily for verification before the password reset page is shown.
 - In the current setup, OTPs are printed to the console for testing purposes.
+- Category and Product creation/updating enforce a minimum 4-letter name validation on both client (`minlength="4"`) and server/database levels.
+- Category duplication is strictly prohibited using case-insensitive validation and unique Mongoose schema indexes.

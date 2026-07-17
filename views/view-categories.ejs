@@ -21,6 +21,25 @@
             </div>
           </div>
 
+          <% if (typeof successMessages !== 'undefined' && successMessages.length) { %>
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+              <i class="bi bi-check-circle me-2"></i>
+              <% successMessages.forEach((message) => { %>
+                <span><%= message %></span>
+              <% }) %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+          <% if (typeof errorMessages !== 'undefined' && errorMessages.length) { %>
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <% errorMessages.forEach((message) => { %>
+                <span><%= message %></span>
+              <% }) %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          <% } %>
+
           <section class="panel mt-3">
             <div class="table-responsive">
               <table class="table align-middle mb-0">
